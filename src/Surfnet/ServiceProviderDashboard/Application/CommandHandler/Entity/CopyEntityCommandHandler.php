@@ -134,6 +134,14 @@ class CopyEntityCommandHandler implements CommandHandler
             $saveEntityCommand->setImportUrl($manageMetadata['coin:original_metadata_url']);
         }
 
+        if (isset($manageMetadata['NameIDFormats:0'])) {
+            $saveEntityCommand->setNameIdFormats0($manageMetadata['NameIDFormats:0']);
+        }
+
+        if (isset($manageMetadata['NameIDFormats:1'])) {
+            $saveEntityCommand->setNameIdFormats1($manageMetadata['NameIDFormats:1']);
+        }
+
         if (isset($manageEntity['data']['metadataurl'])) {
             $saveEntityCommand->setMetadataUrl($manageEntity['data']['metadataurl']);
         }

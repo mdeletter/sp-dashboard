@@ -362,6 +362,16 @@ class SaveEntityCommand implements Command
      */
     private $manageId;
 
+    /**
+     * @var string
+     */
+    private $nameIdFormats0;
+
+    /**
+     * @var string
+     */
+    private $nameIdFormats1;
+
     private function __construct()
     {
     }
@@ -431,6 +441,8 @@ class SaveEntityCommand implements Command
         $command->organizationDisplayNameEn = $entity->getOrganizationDisplayNameEn();
         $command->organizationUrlNl = $entity->getOrganizationUrlNl();
         $command->organizationUrlEn = $entity->getOrganizationUrlEn();
+        $command->nameIdFormats0 = $entity->getNameIdFormats0();
+        $command->nameIdFormats1 = $entity->getNameIdFormats1();
 
         return $command;
     }
@@ -1177,5 +1189,37 @@ class SaveEntityCommand implements Command
     public function setManageId($manageId)
     {
         $this->manageId = $manageId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameIdFormats0()
+    {
+        return $this->nameIdFormats0;
+    }
+
+    /**
+     * @param string $format
+     */
+    public function setNameIdFormats0($format)
+    {
+        $this->nameIdFormats0 = $format;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameIdFormats1()
+    {
+        return $this->nameIdFormats1;
+    }
+
+    /**
+     * @param string $format
+     */
+    public function setNameIdFormats1($format)
+    {
+        $this->nameIdFormats1 = $format;
     }
 }

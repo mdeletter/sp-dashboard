@@ -345,6 +345,18 @@ class Entity
      * @var string
      * @ORM\Column(type="text", nullable=true)
      */
+    private $nameIdFormats0;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $nameIdFormats1;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
     private $comments;
 
     /**
@@ -1163,6 +1175,44 @@ class Entity
     public function setOrganizationUrlNl($value)
     {
         $this->organizationUrlNl = (string) $value;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameIdFormats0()
+    {
+        return $this->nameIdFormats0;
+    }
+
+    /**
+     * @param string $format
+     * @return Entity
+     */
+    public function setNameIdFormats0($format)
+    {
+        $this->nameIdFormats0 = $format;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameIdFormats1()
+    {
+        return $this->nameIdFormats1;
+    }
+
+    /**
+     * @param string $format
+     * @return Entity
+     */
+    public function setNameIdFormats1($format)
+    {
+        $this->nameIdFormats1 = $format;
 
         return $this;
     }

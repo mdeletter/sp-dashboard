@@ -329,6 +329,8 @@ class EntityType extends AbstractType
             ->add('organizationDisplayNameEn', HiddenType::class)
             ->add('organizationUrlNl', HiddenType::class)
             ->add('organizationUrlEn', HiddenType::class)
+            ->add('nameIdFormats0', HiddenType::class)
+            ->add('nameIdFormats1', HiddenType::class)
 
             ->add('save', SubmitType::class, ['attr' => ['class' => 'button']])
             ->add('publishButton', SubmitType::class, ['label'=> 'Publish', 'attr' => ['class' => 'button']])

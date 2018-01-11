@@ -101,6 +101,9 @@ CERT
         $entity->setOrganizationDisplayNameNl('orgdisnl');
         $entity->setOrganizationUrlNl('http://orgnl');
 
+        $entity->setNameIdFormats0('format0');
+        $entity->setNameIdFormats1('format1');
+
         $contact = new Contact();
         $contact->setFirstName('givenname');
         $contact->setLastName('surname');
@@ -155,5 +158,8 @@ CERT
         $this->assertEquals('surname', $fields['contacts:0:surName']);
         $this->assertEquals('emailaddress', $fields['contacts:0:emailAddress']);
         $this->assertEquals('telephonenumber', $fields['contacts:0:telephoneNumber']);
+
+        $this->assertEquals('format0', $fields['NameIDFormats:0']);
+        $this->assertEquals('format1', $fields['NameIDFormats:1']);
     }
 }
