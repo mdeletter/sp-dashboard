@@ -41,6 +41,9 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
 
+egulias_security_debug_command:
+    user_class: Surfnet\ServiceProviderDashboard\Domain\Entity\Contact
+
 # Doctrine Configuration
 doctrine:
     dbal:

@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new OpenConext\MonitorBundle\OpenConextMonitorBundle(),
             new Surfnet\SamlBundle\SurfnetSamlBundle(),
             new Surfnet\ServiceProviderDashboard\Infrastructure\DashboardBundle\DashboardBundle(),
+            new Surfnet\ServiceProviderDashboard\Infrastructure\DeprovisionApiBundle\DeprovisionApiBundle(),
             new Surfnet\ServiceProviderDashboard\Infrastructure\DashboardSamlBundle\DashboardSamlBundle(),
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
@@ -36,6 +37,7 @@ class AppKernel extends Kernel
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+            $bundles[] = new Egulias\SecurityDebugCommandBundle\EguliasSecurityDebugCommandBundle();
         }
 
         return $bundles;

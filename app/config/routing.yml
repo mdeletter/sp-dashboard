@@ -1,6 +1,10 @@
 dashboard:
     resource: '@DashboardBundle/Resources/config/routing.yml'
 
+api:
+    resource: '@DeprovisionApiBundle/Resources/config/routing.yml'
+    prefix: /api
+
 dashboard_saml:
     resource: "@DashboardSamlBundle/Controller/"
     type:     annotation

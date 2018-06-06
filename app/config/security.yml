@@ -4,11 +4,21 @@ security:
 
     role_hierarchy:
         ROLE_ADMINISTRATOR: ROLE_USER
+        ROLE_API_USER_DEPROVISION: ROLE_USER
 
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
+        in_memory:
+            memory:
+                users:
+                    "%deprovision_api_user%":
+                        password: "%deprovision_api_password%"
+                        roles: 'ROLE_API_USER_DEPROVISION'
         dashboard:
             id: Surfnet\ServiceProviderDashboard\Infrastructure\DashboardSamlBundle\Security\Service\IdentityService
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -16,6 +26,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
             logout_on_user_change: true
+
+        deprovision_api:
+            pattern: ^/api/deprovision/*
+            http_basic:
+                provider: in_memory
 
         login_firewall:
             pattern:    ^/saml/metadata
@@ -46,4 +61,5 @@ security:
     access_control:
         - { path: ^/saml, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
         - { path: ^/entity/metadata, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/api/deprovision/, roles: ROLE_API_USER_DEPROVISION, requires_channel: https }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY, requires_channel: https }

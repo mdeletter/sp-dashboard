@@ -46,6 +46,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^2.4",
+        "egulias/security-debug-command-bundle": "0.6.0",
         "incenteev/composer-parameter-handler": "^2.0",
         "jakub-onderka/php-parallel-lint": "^0.9.2",
         "malukenho/docheader": "^0.1.6",
