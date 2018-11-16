@@ -203,7 +203,23 @@ class Entity implements JsonSerializable
      */
     public function getLink()
     {
-        return $this->router->generate('entity_edit', ['id' => $this->getId()]);
+        if ($this->allowEditAction()) {
+            return $this->router->generate('entity_edit', ['id' => $this->getId()]);
+        } elseif ($this->allowCopyAction()) {
+            return $this->router->generate('entity_copy', [
+                'manageId' => $this->getId(),
+                'targetEnvironment' => $this->environment,
+                'sourceEnvironment' => $this->environment,
+            ]);
+        } else if ($this->allowCloneAction()){
+            return $this->router->generate('entity_copy', [
+                'manageId' => $this->getId(),
+                'targetEnvironment' => 'production',
+                'sourceEnvironment' => 'production',
+            ]);
+        }
+
+        return '#';
     }
 
     public function jsonSerialize()

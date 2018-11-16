@@ -146,7 +146,7 @@ export class ServiceStatus {
       link.innerHTML = entity.name;
       link.classList.add('service-status-entity-link');
 
-      if (entity.environment === 'prod') {
+      if (entity.environment === 'production') {
         if (this.elementListProd.innerText === '') {
           this.elementListProd.innerText = 'Prod';
         }
