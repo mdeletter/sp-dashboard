@@ -60,24 +60,14 @@ class EntityService implements EntityServiceInterface
 
     public function getEntityListForService(Service $service)
     {
-        $entities = [];
+        $entities = $this->getEntitiesForService($service);
 
-        $draftEntities = $this->findDraftEntitiesByServiceId($service->getId());
-        foreach ($draftEntities as $entity) {
-            $entities[] = ViewObject\Entity::fromEntity($entity, $this->router);
+        $result = [];
+        foreach ($entities as $entity) {
+            $result[] = new ViewObject\Entity($entity, $this->router);
         }
 
-        $testEntities = $this->findPublishedTestEntitiesByTeamName($service->getTeamName());
-        foreach ($testEntities as $result) {
-            $entities[] = ViewObject\Entity::fromManageTestResult($result, $this->router);
-        }
-
-        $productionEntities = $this->findPublishedProductionEntitiesByTeamName($service->getTeamName());
-        foreach ($productionEntities as $result) {
-            $entities[] = ViewObject\Entity::fromManageProductionResult($result, $this->router);
-        }
-
-        return new ViewObject\EntityList($entities);
+        return new ViewObject\EntityList($result);
     }
 
     public function getEntitiesForService(Service $service)

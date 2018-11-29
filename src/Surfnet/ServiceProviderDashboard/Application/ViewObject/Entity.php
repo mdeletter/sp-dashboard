@@ -17,8 +17,7 @@
  */
 namespace Surfnet\ServiceProviderDashboard\Application\ViewObject;
 
-use Surfnet\ServiceProviderDashboard\Domain\Entity\Entity as DomainEntity;
-use Surfnet\ServiceProviderDashboard\Domain\ValueObject\Contact as Contact;
+use Surfnet\ServiceProviderDashboard\Application\Dto\EntityDto;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -62,120 +61,18 @@ class Entity
     private $router;
 
     /**
-     * @param string $id
-     * @param string $entityId
-     * @param string $name
-     * @param string $contact
-     * @param string $state
-     * @param string $environment
+     * @param EntityDto $entity
      * @param RouterInterface $router
      */
-    public function __construct($id, $entityId, $name, $contact, $state, $environment, RouterInterface $router)
+    public function __construct(EntityDto $entity, RouterInterface $router)
     {
-        $this->id = $id;
-        $this->entityId = $entityId;
-        $this->name = $name;
-        $this->contact = $contact;
-        $this->state = $state;
-        $this->environment = $environment;
+        $this->id = $entity->getId();
+        $this->entityId = $entity->getEntityId();
+        $this->name = $entity->getName();
+        $this->contact = $entity->getContact();
+        $this->state = $entity->getState();
+        $this->environment = $entity->getEnvironment();
         $this->router = $router;
-    }
-
-    public static function fromEntity(DomainEntity $entity, RouterInterface $router)
-    {
-        $contact = $entity->getAdministrativeContact();
-
-        $formattedContact = '';
-
-        if ($contact) {
-            $formattedContact = self::formatDashboardContact($contact);
-        }
-
-        return new self(
-            $entity->getId(),
-            $entity->getEntityId(),
-            $entity->getNameEn(),
-            $formattedContact,
-            $entity->getStatus(),
-            $entity->getEnvironment(),
-            $router
-        );
-    }
-
-    public static function fromManageTestResult(array $result, RouterInterface $router)
-    {
-        $metadata = $result['data']['metaDataFields'];
-
-        $formattedContact = self::formatManageContact($metadata);
-
-        return new self(
-            $result['id'],
-            $result['data']['entityid'],
-            $metadata['name:en'],
-            $formattedContact,
-            'published',
-            'test',
-            $router
-        );
-    }
-
-    public static function fromManageProductionResult(array $result, RouterInterface $router)
-    {
-        $metadata = $result['data']['metaDataFields'];
-
-        $formattedContact = self::formatManageContact($metadata);
-
-        // As long as the coin:exclude_from_push metadata is present, allow modifications to the entity by
-        // copying it from manage and merging the changes. The view status text: requested is set when an entity
-        // can still be edited.
-        $status = 'published';
-        if (isset($metadata['coin:exclude_from_push']) && $metadata['coin:exclude_from_push'] == 1) {
-            $status = 'requested';
-        }
-
-        return new self(
-            $result['id'],
-            $result['data']['entityid'],
-            $metadata['name:en'],
-            $formattedContact,
-            $status,
-            'production',
-            $router
-        );
-    }
-
-    /**
-     * @return string
-     */
-    private static function formatManageContact(array $metadata)
-    {
-        for ($i=0; $i<=2; $i++) {
-            $attrPrefix = sprintf('contacts:%d:', $i);
-
-            if (isset($metadata[$attrPrefix . 'contactType']) && $metadata[$attrPrefix . 'contactType'] === 'administrative') {
-                return sprintf(
-                    '%s %s (%s)',
-                    $metadata[$attrPrefix . 'givenName'],
-                    $metadata[$attrPrefix . 'surName'],
-                    $metadata[$attrPrefix . 'emailAddress']
-                );
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    private static function formatDashboardContact(Contact $contact)
-    {
-        return sprintf(
-            '%s %s (%s)',
-            $contact->getFirstName(),
-            $contact->getLastName(),
-            $contact->getEmail()
-        );
     }
 
     /**

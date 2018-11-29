@@ -18,7 +18,9 @@
 
 namespace Surfnet\ServiceProviderDashboard\Application\Dto;
 
-use Surfnet\ServiceProviderDashboard\Domain\Entity\Entity;
+use Surfnet\ServiceProviderDashboard\Domain\Entity\Entity as DomainEntity;
+use Surfnet\ServiceProviderDashboard\Domain\ValueObject\Contact as Contact;
+use Symfony\Component\Routing\RouterInterface;
 
 class EntityDto
 {
@@ -35,7 +37,12 @@ class EntityDto
     /**
      * @var string
      */
-    private $environment;
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $contact;
 
     /**
      * @var string
@@ -43,42 +50,120 @@ class EntityDto
     private $state;
 
     /**
+     * @var string
+     */
+    private $environment;
+
+    /**
      * @param string $id
      * @param string $entityId
-     * @param string $environment
+     * @param string $name
+     * @param string $contact
      * @param string $state
+     * @param string $environment
      */
-    public function __construct($id, $entityId, $environment, $state)
+    public function __construct($id, $entityId, $name, $contact, $state, $environment)
     {
         $this->id = $id;
         $this->entityId = $entityId;
-        $this->environment = $environment;
+        $this->name = $name;
+        $this->contact = $contact;
         $this->state = $state;
+        $this->environment = $environment;
     }
 
-
-    public static function fromEntity(Entity $entity)
+    public static function fromEntity(DomainEntity $entity)
     {
-        return new self($entity->getId(), $entity->getEntityId(), $entity->getEnvironment(), $entity->getStatus());
-    }
+        $contact = $entity->getAdministrativeContact();
 
-    public static function fromManageTestResult(array $manageResponse)
-    {
+        $formattedContact = '';
+
+        if ($contact) {
+            $formattedContact = self::formatDashboardContact($contact);
+        }
+
         return new self(
-            $manageResponse['id'],
-            $manageResponse['data']['entityid'],
+            $entity->getId(),
+            $entity->getEntityId(),
+            $entity->getNameEn(),
+            $formattedContact,
+            $entity->getStatus(),
+            $entity->getEnvironment()
+        );
+    }
+
+    public static function fromManageTestResult(array $result)
+    {
+        $metadata = $result['data']['metaDataFields'];
+
+        $formattedContact = self::formatManageContact($metadata);
+
+        return new self(
+            $result['id'],
+            $result['data']['entityid'],
+            $metadata['name:en'],
+            $formattedContact,
             'published',
             'test'
         );
     }
 
-    public static function fromManageProductionResult(array $manageResponse)
+    public static function fromManageProductionResult(array $result)
     {
+        $metadata = $result['data']['metaDataFields'];
+
+        $formattedContact = self::formatManageContact($metadata);
+
+        // As long as the coin:exclude_from_push metadata is present, allow modifications to the entity by
+        // copying it from manage and merging the changes. The view status text: requested is set when an entity
+        // can still be edited.
+        $status = 'published';
+        if (isset($metadata['coin:exclude_from_push']) && $metadata['coin:exclude_from_push'] == 1) {
+            $status = 'requested';
+        }
+
         return new self(
-            $manageResponse['id'],
-            $manageResponse['data']['entityid'],
-            'published',
+            $result['id'],
+            $result['data']['entityid'],
+            $metadata['name:en'],
+            $formattedContact,
+            $status,
             'production'
+        );
+    }
+
+    /**
+     * @return string
+     */
+    private static function formatManageContact(array $metadata)
+    {
+        for ($i=0; $i<=2; $i++) {
+            $attrPrefix = sprintf('contacts:%d:', $i);
+
+            if (isset($metadata[$attrPrefix . 'contactType']) && $metadata[$attrPrefix . 'contactType'] === 'administrative') {
+                return sprintf(
+                    '%s %s (%s)',
+                    $metadata[$attrPrefix . 'givenName'],
+                    $metadata[$attrPrefix . 'surName'],
+                    $metadata[$attrPrefix . 'emailAddress']
+                );
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @param Contact $contact
+     * @return string
+     */
+    private static function formatDashboardContact(Contact $contact)
+    {
+        return sprintf(
+            '%s %s (%s)',
+            $contact->getFirstName(),
+            $contact->getLastName(),
+            $contact->getEmail()
         );
     }
 
@@ -93,9 +178,25 @@ class EntityDto
     /**
      * @return string
      */
-    public function getEnvironment()
+    public function getEntityId()
     {
-        return $this->environment;
+        return $this->entityId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContact()
+    {
+        return $this->contact;
     }
 
     /**
@@ -104,5 +205,21 @@ class EntityDto
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocol()
+    {
+        return 'SAML';
     }
 }

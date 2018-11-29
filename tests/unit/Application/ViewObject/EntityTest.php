@@ -20,6 +20,7 @@ namespace Surfnet\ServiceProviderDashboard\Tests\Unit\Application\ViewObject;
 
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
+use Surfnet\ServiceProviderDashboard\Application\Dto\EntityDto;
 use Surfnet\ServiceProviderDashboard\Application\ViewObject\Entity;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -80,14 +81,15 @@ class EntityTest extends MockeryTestCase
     {
         $router = m::mock(RouterInterface::class);
 
-        return new Entity(
+        $dto = new EntityDto(
             '116252ea-c19a-4842-9bb1-c8830cca780f',
             'https://example.com/saml/metadata',
             'example-entity',
             'John Doe',
             $state,
-            $env,
-            $router
+            $env
         );
+
+        return new Entity($dto, $router);
     }
 }
